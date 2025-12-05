@@ -1,0 +1,39 @@
+@use 'config' as *;
+@forward 'config';
+
+// .z-block
+@mixin b($block) {
+    $B: $namespace + '-' + $block !global;
+    .#{$B} {
+        @content;
+    }
+}
+
+// .z-block__element
+@mixin e($element) {
+   @at-root{
+    #{&+$element-separator+$element}{
+        @content
+    }
+   }
+}
+
+// .z-block--modifier
+
+@mixin m($modifier) {
+   @at-root{
+    #{&+$modifier-separator+$modifier}{
+        @content
+    }
+   }
+}
+
+
+// .is-xxx
+@mixin when($state) {
+    @at-root{
+    &.#{$state-prefix + $state} {
+        @content
+    }
+   }
+}
