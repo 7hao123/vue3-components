@@ -1,5 +1,12 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import { createApp } from "vue";
+import "./style.css";
+import App from "./App.vue";
 
-createApp(App).mount('#app')
+import Icon from "@mine/components/icon";
+
+const plugins = [Icon];
+
+const app = createApp(App);
+plugins.forEach((plugin) => app.use(plugin));
+console.log(app);
+app.mount("#app");
