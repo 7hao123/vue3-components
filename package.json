@@ -1,0 +1,21 @@
+{
+  "name": "vue3-components",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "pnpm --filter play dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.23.0",
+  "dependencies": {
+    "@mine/components": "workspace:*",
+    "@mine/theme-chalk": "workspace:*",
+    "@mine/utils": "workspace:*",
+    "typescript": "^5.9.3",
+    "vue": "^3.5.25"
+  }
+}
