@@ -21,6 +21,12 @@
     "strict": true,                         // 开启严格模式
     "skipLibCheck": true                    // 跳过类型库检查
   },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.vue",
+    "play/src/**/*.ts",
+    "play/src/**/*.vue"
+  ],
   "exclude": [
     "node_modules",
     "**/__tests__",
