@@ -1,6 +1,6 @@
 <template>tree</template>
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { TreeNode, TreeOption, treeProps } from './tree'
 
 defineOptions({
@@ -66,4 +66,37 @@ watch(
   },
   { immediate: true }
 )
+
+//
+
+const expandedKeysSet = ref(new Set(props.defaultExpandedKeys))
+
+const flattenTree = computed(() => {
+  let expandedKeys = expandedKeysSet.value
+
+  // 被扁平化的树
+  let flattenNodes: TreeNode[] = []
+
+  const nodes = tree.value || [] //被格式化的节点
+
+  const stack: TreeNode[] = [] //遍历树的栈
+
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    stack.push(nodes[i])
+  }
+  while (stack.length) {
+    const node = stack.pop()
+    if (node) {
+      flattenNodes.push(node)
+      if (expandedKeys.has(node.key)) {
+        const children = node.children || []
+        for (let i = children.length - 1; i >= 0; i--) {
+          stack.push(children[i])
+        }
+      }
+    }
+  }
+  return flattenNodes
+})
+console.log(flattenTree.value)
 </script>

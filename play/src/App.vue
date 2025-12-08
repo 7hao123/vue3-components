@@ -41,6 +41,7 @@ const data = ref<TreeOption[]>(createData())
     label-field="xxx"
     key-field="key"
     children-field="children"
+    :default-expanded-keys="['40', '41']"
   ></z-tree>
 </template>
 
