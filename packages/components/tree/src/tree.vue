@@ -8,13 +8,14 @@
       :key="node.key"
       :node="node"
       :expanded="isExpanded(node)"
+      :loadingKeys="loadingKeysRef"
       @toggle="toggleExpand"
     ></z-tree-node>
   </div>
 </template>
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
-import { TreeNode, TreeOption, treeProps } from './tree'
+import { Key, TreeNode, TreeOption, treeProps } from './tree'
 import { createNamespace } from '@mine/utils/create'
 import ZTreeNode from './treeNode.vue'
 
@@ -30,6 +31,22 @@ const props = defineProps(treeProps)
 
 const tree = ref<TreeNode[]>([])
 
+const treeOptions = createOptions(
+  props.keyField,
+  props.labelField,
+  props.childrenField
+)
+
+watch(
+  () => props.data,
+  (data: TreeOption[]) => {
+    tree.value = createTree(data)
+    console.log(tree.value)
+  },
+  { immediate: true }
+)
+
+// 获取对应的字段 labelField..
 function createOptions(key: string, label: string, children: string) {
   return {
     getKey(node: TreeOption) {
@@ -44,14 +61,8 @@ function createOptions(key: string, label: string, children: string) {
   }
 }
 
-const treeOptions = createOptions(
-  props.keyField,
-  props.labelField,
-  props.childrenField
-)
-
 // 对树结构进行格式化
-function createTree(data: TreeOption[]) {
+function createTree(data: TreeOption[], parent: TreeNode | null = null) {
   function traverse(data: TreeOption[], parent: TreeNode | null = null) {
     return data.map(node => {
       let children = treeOptions.getChildren(node) || []
@@ -70,23 +81,13 @@ function createTree(data: TreeOption[]) {
       return treeNode
     })
   }
-  const result: TreeNode[] = traverse(data)
+  const result: TreeNode[] = traverse(data, parent)
   return result
 }
-
-watch(
-  () => props.data,
-  (data: TreeOption[]) => {
-    tree.value = createTree(data)
-    console.log(tree.value)
-  },
-  { immediate: true }
-)
-
-//
-
+// 需要展开的key有哪些？
 const expandedKeysSet = ref(new Set(props.defaultExpandedKeys))
 
+// 将树扁平化
 const flattenTree = computed(() => {
   let expandedKeys = expandedKeysSet.value
 
@@ -123,8 +124,31 @@ function collapse(node: TreeNode) {
   expandedKeysSet.value.delete(node.key)
 }
 
+const loadingKeysRef = ref(new Set<Key>())
+
+function triggerLoading(node: TreeNode) {
+  // 没孩子并且不是叶子节点
+  if (!node.children.length && !node.isLeaf) {
+    if (!loadingKeysRef.value.has(node.key)) {
+      loadingKeysRef.value.add(node.key)
+      const onLoad = props.onLoad
+      if (onLoad) {
+        onLoad(node.rawNode).then(children => {
+          node.rawNode.children = children
+          // 修改createTree不然层级有问题
+          node.children = createTree(children, node)
+          loadingKeysRef.value.delete(node.key)
+        })
+      }
+    }
+  }
+}
+
 function expand(node: TreeNode) {
   expandedKeysSet.value.add(node.key)
+
+  // 这里进行加载请求
+  triggerLoading(node)
 }
 
 function toggleExpand(node: TreeNode) {

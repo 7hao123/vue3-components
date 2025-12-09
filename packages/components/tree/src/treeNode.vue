@@ -13,7 +13,8 @@
         @click="handleExpand"
       >
         <z-icon size="25">
-          <Switcher></Switcher>
+          <Switcher v-if="!isLoading"></Switcher>
+          <Loading v-else></Loading>
         </z-icon>
       </span>
       <span>{{ node?.label }}</span>
@@ -26,6 +27,8 @@ import { treeNodeEmits, treeNodeProps } from './tree'
 import { createNamespace } from '@mine/utils/create'
 import ZIcon from '@mine/components/icon'
 import Switcher from './icon/Switcher'
+import Loading from './icon/Loading'
+import { computed } from 'vue'
 
 const props = defineProps(treeNodeProps)
 const emit = defineEmits(treeNodeEmits)
@@ -33,4 +36,8 @@ const bem = createNamespace('tree-node')
 function handleExpand() {
   emit('toggle', props.node!)
 }
+
+const isLoading = computed(() => {
+  return props.loadingKeys?.has(props.node!.key)
+})
 </script>

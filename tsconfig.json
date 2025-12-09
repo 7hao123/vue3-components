@@ -7,6 +7,7 @@
     "moduleResolution": "node",      // 按照 node 模块来解析
     "esModuleInterop": true,         // 支持 es6 与 commonjs 模块互转
     "jsx": "preserve",               // jsx 不转
+    "jsxImportSource": "vue",        // 使用 vue 的 jsx 类型
     "noLib": false,                  // 不屏蔽类型库
     "target": "es6",                 // 遵循 es6 版本
     "sourceMap": true,               // 生成 map 用于调试
@@ -23,6 +24,7 @@
   },
   "include": [
     "packages/**/*.ts",
+    "packages/**/*.tsx",
     "packages/**/*.vue",
     "play/src/**/*.ts",
     "play/src/**/*.vue"

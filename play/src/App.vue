@@ -1,24 +1,21 @@
 <script setup lang="ts">
+import type { TreeOption } from '@mine/components/tree/src/tree'
 import { AddCircle } from '@vicons/ionicons5'
 
 import { ref } from 'vue'
-interface TreeOption {
-  label: string
-  key: string
-  children?: TreeOption[]
-}
-function createData(level = 4, parentKey = ''): TreeOption[] {
-  if (!level) return []
-  const arr = new Array(6 - level).fill(0)
-  return arr.map((_, idx: number) => {
-    const key = parentKey + level + idx
-    return {
-      xxx: createLabel(level),
-      key,
-      children: createData(level - 1, key)
-    }
-  })
-}
+
+// function createData(level = 4, parentKey = ''): TreeOption[] {
+//   if (!level) return []
+//   const arr = new Array(6 - level).fill(0)
+//   return arr.map((_, idx: number) => {
+//     const key = parentKey + level + idx
+//     return {
+//       xxx: createLabel(level),
+//       key,
+//       children: createData(level - 1, key)
+//     }
+//   })
+// }
 function createLabel(level: number): string {
   if (level === 4) return '道生一'
   if (level === 3) return '一生二'
@@ -26,7 +23,55 @@ function createLabel(level: number): string {
   if (level === 1) return '三生万物'
   return ''
 }
+
+function createData() {
+  return [
+    {
+      label: nextLabel(),
+      key: 1,
+      isLeaf: false //isLeaf false表示点击的时候动态加载叶子节点
+    },
+    {
+      label: nextLabel(),
+      key: 2,
+      isLeaf: false
+    }
+  ]
+}
+
+function nextLabel(currentLabel?: string | number): string {
+  if (!currentLabel) return 'Out of Tao, One is born'
+
+  if (currentLabel === 'Out of Tao, One is born') return 'Out of One, Two'
+  if (currentLabel === 'Out of One, Two') return 'Out of Two, Three'
+  if (currentLabel === 'Out of Two, Three') {
+    return 'Out of Three, the created universe'
+  }
+
+  if (currentLabel === 'Out of Three, the created universe') {
+    return 'Out of Tao, One is born'
+  }
+
+  return ''
+}
+
 const data = ref<TreeOption[]>(createData())
+
+const handleLoad = (node: TreeOption) => {
+  // 内部组件需要将需要展开的节点传给用户
+  return new Promise<TreeOption[]>((resolve, reject) => {
+    setTimeout(() => {
+      resolve([
+        // 这里作为当前展开的node
+        {
+          label: nextLabel(node.label),
+          key: node.key + nextLabel(node.label),
+          isLeaf: false
+        }
+      ])
+    }, 1000)
+  })
+}
 </script>
 
 <template>
@@ -38,10 +83,11 @@ const data = ref<TreeOption[]>(createData())
   <!-- 传递树结构 -->
   <z-tree
     :data="data"
-    label-field="xxx"
+    label-field="label"
     key-field="key"
     children-field="children"
     :default-expanded-keys="['40', '41']"
+    :on-load="handleLoad"
   ></z-tree>
 </template>
 
