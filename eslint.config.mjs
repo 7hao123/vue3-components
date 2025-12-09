@@ -17,7 +17,7 @@ export default [
   // TypeScript 配置
   ...tseslint.configs.recommended,
   // Vue 配置
-  ...pluginVue.configs['flat/essential'],
+  pluginVue.configs.recommended,
   // 全局配置
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,vue}'],

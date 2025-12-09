@@ -1,14 +1,30 @@
-<template>tree</template>
+<template>
+  <div :class="bem.b()">
+    <!-- <template v-for="node in flattenTree" :key="node.key">
+      <div :class="bem.e('element')">{{ node.label }}</div>
+    </template> -->
+    <z-tree-node
+      v-for="node in flattenTree"
+      :key="node.key"
+      :node="node"
+      :expanded="isExpanded(node)"
+      @toggle="toggleExpand"
+    ></z-tree-node>
+  </div>
+</template>
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { TreeNode, TreeOption, treeProps } from './tree'
+import { createNamespace } from '@mine/utils/create'
+import ZTreeNode from './treeNode.vue'
+
+const bem = createNamespace('tree')
 
 defineOptions({
   name: 'z-tree'
 })
 
 const props = defineProps(treeProps)
-console.log(props)
 
 // 有了props 要对用户的数据进行格式化
 
@@ -98,5 +114,25 @@ const flattenTree = computed(() => {
   }
   return flattenNodes
 })
-console.log(flattenTree.value)
+
+function isExpanded(node) {
+  return expandedKeysSet.value.has(node.key)
+}
+
+function collapse(node: TreeNode) {
+  expandedKeysSet.value.delete(node.key)
+}
+
+function expand(node: TreeNode) {
+  expandedKeysSet.value.add(node.key)
+}
+
+function toggleExpand(node: TreeNode) {
+  const expandKeys = expandedKeysSet.value
+  if (expandKeys.has(node.key)) {
+    collapse(node)
+  } else {
+    expand(node)
+  }
+}
 </script>
