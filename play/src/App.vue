@@ -55,7 +55,7 @@ function nextLabel(currentLabel?: string | number): string {
   return ''
 }
 
-// const data = ref<TreeOption[]>(createData())
+const data = ref<TreeOption[]>(createData())
 
 const handleLoad = (node: TreeOption) => {
   // 内部组件需要将需要展开的节点传给用户
@@ -75,33 +75,33 @@ const handleLoad = (node: TreeOption) => {
 
 const value = ref<Key[]>(['40', '41'])
 
-const data = ref<TreeOption[]>([
-  {
-    key: '0',
-    label: '0',
-    children: [
-      {
-        key: '0-0',
-        label: '0-0'
-      },
-      {
-        disabled: true, // 这个节点被禁用
-        key: '0-1',
-        label: '0-1',
-        children: [
-          {
-            label: '0-1-0',
-            key: '0-1-0'
-          },
-          {
-            label: '0-1-1',
-            key: '0-1-1'
-          }
-        ]
-      }
-    ]
-  }
-])
+// const data = ref<TreeOption[]>([
+//   {
+//     key: '0',
+//     label: '0',
+//     children: [
+//       {
+//         key: '0-0',
+//         label: '0-0'
+//       },
+//       {
+//         disabled: true, // 这个节点被禁用
+//         key: '0-1',
+//         label: '0-1',
+//         children: [
+//           {
+//             label: '0-1-0',
+//             key: '0-1-0'
+//           },
+//           {
+//             label: '0-1-1',
+//             key: '0-1-1'
+//           }
+//         ]
+//       }
+//     ]
+//   }
+// ])
 </script>
 
 <template>
@@ -111,12 +111,11 @@ const data = ref<TreeOption[]>([
     <AddCircle />
   </ZIcon>
   <!-- 传递树结构 -->
-  <z-tree
-    :data="data"
-    selectable
-    multiple
-    v-model:selected-keys="value"
-  ></z-tree>
+  <z-tree :data="data" selectable multiple v-model:selected-keys="value">
+    <template #default="{ node }">
+      <span>{{ node.label }} {{ node.key }}</span>
+    </template>
+  </z-tree>
   <!-- selectable 表示可以选择节点  multiple 表示可以多选  selected-keys是选中后的节点  -->
 </template>
 

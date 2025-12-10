@@ -13,13 +13,15 @@
       @toggle="toggleExpand"
       @select="handleSelect"
     ></z-tree-node>
+    <!-- 插槽需要多层传递，因此用provide -->
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, provide, ref, useSlots, watch } from 'vue'
 import {
   Key,
   treeEmits,
+  treeInjectKey,
   TreeNode,
   treeNodeEmits,
   TreeOption,
@@ -207,4 +209,8 @@ watch(
     immediate: true
   }
 )
+// 这里接受app拿到的slots，传给treeNode和content
+provide(treeInjectKey, {
+  slots: useSlots()
+})
 </script>

@@ -23,20 +23,22 @@
           <Loading v-else></Loading>
         </z-icon>
       </span>
-      <span @click="handleSelected" :class="bem.e('label')">{{
-        node?.label
-      }}</span>
+      <span @click="handleSelected" :class="bem.e('label')">
+        <z-tree-node-content :node="node"></z-tree-node-content>
+        <!-- {{ node?.label }} {{ treeContext?.slots.default!({ node }) }} -->
+      </span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { treeNodeEmits, treeNodeProps } from './tree'
+import { treeInjectKey, treeNodeEmits, treeNodeProps } from './tree'
 import { createNamespace } from '@mine/utils/create'
 import ZIcon from '@mine/components/icon'
 import Switcher from './icon/Switcher'
 import Loading from './icon/Loading'
-import { computed } from 'vue'
+import ZTreeNodeContent from './tree-node-content'
+import { computed, inject } from 'vue'
 
 const props = defineProps(treeNodeProps)
 const emit = defineEmits(treeNodeEmits)
@@ -56,4 +58,8 @@ function handleSelected() {
   if (props.node?.disabled) return
   emit('select', props.node!)
 }
+
+const treeContext = inject(treeInjectKey)
+// 这是一个虚拟节点
+// console.log(treeContext.slots.default({props.node}))
 </script>

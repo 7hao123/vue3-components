@@ -1,5 +1,5 @@
 // tree组件的props
-import { ExtractPropTypes, PropType } from 'vue'
+import { ExtractPropTypes, InjectionKey, PropType, SetupContext } from 'vue'
 
 export type Key = string | number
 
@@ -83,3 +83,16 @@ export const treeEmits = {
 
 export type TreeNodeProps = Partial<ExtractPropTypes<typeof treeNodeProps>>
 export type TreeProps = Partial<ExtractPropTypes<typeof treeProps>>
+
+export interface TreeContext {
+  slots: SetupContext['slots']
+  // emit: SetupContext<typeof treeEmits>['emit']
+}
+// 作为提供出去的属性
+export const treeInjectKey: InjectionKey<TreeContext> = Symbol()
+export const treeNodeContentProps = {
+  node: {
+    type: Object as PropType<TreeNode>,
+    required: true
+  }
+}
