@@ -9,13 +9,22 @@
       :node="node"
       :expanded="isExpanded(node)"
       :loadingKeys="loadingKeysRef"
+      :selectedKeys="selectKeysRef"
       @toggle="toggleExpand"
+      @select="handleSelect"
     ></z-tree-node>
   </div>
 </template>
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
-import { Key, TreeNode, TreeOption, treeProps } from './tree'
+import {
+  Key,
+  treeEmits,
+  TreeNode,
+  treeNodeEmits,
+  TreeOption,
+  treeProps
+} from './tree'
 import { createNamespace } from '@mine/utils/create'
 import ZTreeNode from './treeNode.vue'
 
@@ -41,7 +50,7 @@ watch(
   () => props.data,
   (data: TreeOption[]) => {
     tree.value = createTree(data)
-    console.log(tree.value)
+    // console.log(tree.value)
   },
   { immediate: true }
 )
@@ -150,7 +159,7 @@ function expand(node: TreeNode) {
   // 这里进行加载请求
   triggerLoading(node)
 }
-
+// 用户点击展开折叠
 function toggleExpand(node: TreeNode) {
   const expandKeys = expandedKeysSet.value
   if (expandKeys.has(node.key)) {
@@ -159,4 +168,42 @@ function toggleExpand(node: TreeNode) {
     expand(node)
   }
 }
+// 处理选中的节点
+function handleSelect(node: TreeNode) {
+  let keys = Array.from(selectKeysRef.value)
+  if (!props.selectable) return
+  if (props.multiple) {
+    keys.findIndex(key => key === node.key) > -1
+      ? keys.splice(
+          keys.findIndex(key => key === node.key),
+          1
+        )
+      : keys.push(node.key)
+  } else {
+    if (keys.includes(node.key)) {
+      keys = []
+    } else {
+      keys = [node.key]
+    }
+  }
+  emit('update:selectedKeys', keys)
+}
+
+// 实现选中节点
+const emit = defineEmits(treeEmits)
+
+const selectKeysRef = ref<Key[]>([])
+
+watch(
+  () => props.selectedKeys,
+  value => {
+    if (value) {
+      selectKeysRef.value = value
+      console.log('selectedKeys', selectKeysRef.value)
+    }
+  },
+  {
+    immediate: true
+  }
+)
 </script>

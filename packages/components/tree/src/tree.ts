@@ -39,7 +39,18 @@ export const treeProps = {
     type: String,
     default: 'children'
   },
-  onLoad: Function as PropType<(node: TreeOption) => Promise<TreeOption[]>>
+  onLoad: Function as PropType<(node: TreeOption) => Promise<TreeOption[]>>,
+  selectedKeys: {
+    type: Array as PropType<Key[]>
+  },
+  selectable: {
+    type: Boolean,
+    default: true
+  },
+  multiple: {
+    type: Boolean,
+    default: false
+  }
 } as const
 
 export const treeNodeProps = {
@@ -53,11 +64,20 @@ export const treeNodeProps = {
   },
   loadingKeys: {
     type: Object as PropType<Set<Key>>
+  },
+  selectedKeys: {
+    type: Array as PropType<Key[]>,
+    default: () => []
   }
 }
 
 export const treeNodeEmits = {
-  toggle: (node: TreeNode) => node
+  toggle: (node: TreeNode) => node,
+  select: (node: TreeNode) => node
+}
+// 内部事件同步响应式数据
+export const treeEmits = {
+  'update:selectedKeys': (keys: Key[]) => keys
 }
 
 export type TreeNodeProps = Partial<ExtractPropTypes<typeof treeNodeProps>>

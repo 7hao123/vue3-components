@@ -1,7 +1,7 @@
 <template>
-  <div :class="bem.b()">
+  <div :class="[bem.b(), bem.is('selected', isSelected)]">
     <div
-      :class="bem.e('content')"
+      :class="[bem.e('content')]"
       :style="{ paddingLeft: node!.level * 16 + 'px' }"
     >
       <span
@@ -17,7 +17,9 @@
           <Loading v-else></Loading>
         </z-icon>
       </span>
-      <span>{{ node?.label }}</span>
+      <span @click="handleSelected" :class="bem.e('label')">{{
+        node?.label
+      }}</span>
     </div>
   </div>
 </template>
@@ -40,4 +42,11 @@ function handleExpand() {
 const isLoading = computed(() => {
   return props.loadingKeys?.has(props.node!.key)
 })
+
+const isSelected = computed(() => {
+  return props.selectedKeys?.includes(props.node!.key)
+})
+function handleSelected() {
+  emit('select', props.node!)
+}
 </script>
