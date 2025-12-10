@@ -14,7 +14,8 @@ export interface TreeOption {
   label?: Key
   key?: Key
   children?: TreeOption[]
-  isLeaf: boolean
+  isLeaf?: boolean
+  disabled?: boolean
   [key: string]: unknown
 }
 

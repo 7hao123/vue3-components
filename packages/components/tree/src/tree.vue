@@ -80,6 +80,7 @@ function createTree(data: TreeOption[], parent: TreeNode | null = null) {
         label: treeOptions.getLabel(node),
         children: [] as TreeNode[],
         rawNode: node,
+        disabled: !!node.disabled,
         level: parent ? parent.level + 1 : 1,
         // 判断节点是自带isLeaf,如果带了以自带的为准，否则看有没有children
         isLeaf: node.isLeaf ?? children.length == 0

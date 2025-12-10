@@ -55,7 +55,7 @@ function nextLabel(currentLabel?: string | number): string {
   return ''
 }
 
-const data = ref<TreeOption[]>(createData())
+// const data = ref<TreeOption[]>(createData())
 
 const handleLoad = (node: TreeOption) => {
   // 内部组件需要将需要展开的节点传给用户
@@ -74,6 +74,34 @@ const handleLoad = (node: TreeOption) => {
 }
 
 const value = ref<Key[]>(['40', '41'])
+
+const data = ref<TreeOption[]>([
+  {
+    key: '0',
+    label: '0',
+    children: [
+      {
+        key: '0-0',
+        label: '0-0'
+      },
+      {
+        disabled: true, // 这个节点被禁用
+        key: '0-1',
+        label: '0-1',
+        children: [
+          {
+            label: '0-1-0',
+            key: '0-1-0'
+          },
+          {
+            label: '0-1-1',
+            key: '0-1-1'
+          }
+        ]
+      }
+    ]
+  }
+])
 </script>
 
 <template>
